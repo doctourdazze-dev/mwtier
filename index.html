@@ -3,104 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MWTier | The Elite</title>
+    <title>MWTier | Official Rankings</title>
     <style>
         :root {
-            --bg: #030508; --card: #0d1117; --border: #30363d;
-            --blue: #58a6ff; --gold: #ffcc00; --text: #f0f6fc;
+            --bg-dark: #05070a; --card: #0d1117; --border: #30363d;
+            --blue: #58a6ff; --gold: #f1c40f; --text: #f0f6fc;
         }
 
+        /* 🌈 خلفية متحركة أسطورية */
         body { 
-            margin: 0; padding: 20px; color: var(--text); font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at center, #0d1117 0%, #030508 100%);
+            margin: 0; padding: 20px; color: var(--text); font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(-45deg, #05070a, #0d1117, #161b22, #05070a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(45deg, rgba(88,166,255,0.05) 0%, transparent 70%);
-            z-index: -1; animation: pulse 8s infinite alternate;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        @keyframes pulse { 0% { opacity: 0.3; } 100% { opacity: 0.7; } }
 
-        .container { width: 100%; max-width: 1200px; z-index: 10; }
+        .container { width: 100%; max-width: 1250px; z-index: 1; }
         .header h1 { 
-            font-size: clamp(40px, 8vw, 70px); text-align: center; letter-spacing: 12px; margin: 40px 0; 
-            font-weight: 900; text-transform: uppercase; color: #fff;
-            text-shadow: 0 0 20px rgba(88, 166, 255, 0.5);
+            font-size: 55px; text-align: center; letter-spacing: 8px; margin-bottom: 30px; 
+            font-weight: 900; text-transform: uppercase;
+            background: linear-gradient(to right, #58a6ff, #f1c40f);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .nav-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; }
+        /* Nav Bar */
+        .nav-bar { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
         .nav-item { 
-            background: #161b22; border: 1px solid var(--border); padding: 10px 15px; 
-            border-radius: 8px; cursor: pointer; transition: 0.2s ease-in-out; text-align: center; min-width: 85px;
+            background: rgba(22, 27, 34, 0.8); border: 1px solid var(--border); padding: 12px 18px; 
+            border-radius: 12px; cursor: pointer; transition: 0.3s forwards; text-align: center; min-width: 90px;
+            backdrop-filter: blur(5px);
         }
-        .nav-item:hover { border-color: var(--blue); background: #1c2128; }
-        .nav-item.active { border-color: var(--blue); background: rgba(88, 166, 255, 0.15); box-shadow: 0 0 15px rgba(88, 166, 255, 0.2); }
-        .nav-item span { font-size: 9px; text-transform: uppercase; display: block; margin-top: 5px; color: #8b949e; letter-spacing: 1px; }
-        .nav-img { width: 24px; height: 24px; object-fit: contain; margin: 0 auto; display: block; filter: drop-shadow(0 0 5px rgba(255,255,255,0.2)); }
+        .nav-item:hover { transform: translateY(-5px); border-color: var(--blue); }
+        .nav-item.active { border-color: var(--blue); background: rgba(88, 166, 255, 0.2); box-shadow: 0 0 15px rgba(88, 166, 255, 0.3); }
+        .nav-item span { font-size: 10px; text-transform: uppercase; display: block; margin-top: 5px; color: #8b949e; font-weight: bold; }
+        .nav-img { width: 28px; height: 28px; object-fit: contain; margin: 0 auto; display: block; }
 
-        .leaderboard { background: rgba(13, 17, 23, 0.8); border-radius: 12px; border: 1px solid var(--border); backdrop-filter: blur(15px); }
+        /* Leaderboard Table */
+        .leaderboard { background: rgba(13, 17, 23, 0.9); border-radius: 20px; border: 1px solid var(--border); overflow-x: auto; backdrop-filter: blur(10px); }
         .row { 
-            display: grid; grid-template-columns: 50px 280px 1fr; align-items: center; 
-            padding: 18px 20px; border-bottom: 1px solid #21262d; transition: 0.3s;
+            display: grid; grid-template-columns: 60px 220px 1fr; align-items: center; 
+            padding: 18px 25px; border-bottom: 1px solid #21262d; min-width: 1150px;
+            transition: 0.2s;
         }
-        .row:hover { background: rgba(255, 255, 255, 0.02); }
+        .row:hover { background: rgba(88, 166, 255, 0.05); }
         
-        /* 🚨 تعديل السكين: تكبير ونزول الوجه 🚨 */
-        .avatar-box { 
-            width: 55px; /* تكبير العرض */
-            height: 55px; /* تكبير الطول */
-            position: relative; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 10px; /* تدوير الزوايا شوية */
-            overflow: hidden; 
-        }
-        .skin-img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; /* باش الصورة تملا المربع بلا ماتخسر */
-            image-rendering: pixelated; 
-            /* 🚨 السر هنا: نزول الوجه بـ 5px من الفوق 🚨 */
-            object-position: center 5px; 
-            filter: brightness(1.1); /* تفتيح بسيط للوجه */
-        }
+        .avatar-box { width: 50px; height: 50px; border-radius: 10px; overflow: hidden; border: 2px solid var(--border); background: #000; position: relative; }
+        .skin-img { width: 100%; height: 100%; object-fit: cover; }
+        .player-name { color: var(--blue); font-weight: bold; margin-left: 15px; font-size: 1.2em; }
         
-        .player-name { color: #fff; font-weight: 600; margin-left: 20px; font-size: 1.2em; }
-        
-        .skills-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 10px; }
-        .skill-box { display: flex; flex-direction: column; align-items: center; opacity: 0.3; transition: 0.3s; }
-        .skill-box.active-skill { opacity: 1; transform: scale(1.1); }
-        .skill-img { width: 22px; height: 22px; margin-bottom: 6px; }
+        .skills-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 12px; }
+        .skill-box { display: flex; flex-direction: column; align-items: center; opacity: 0.25; transition: 0.4s; }
+        .skill-box.active-skill { opacity: 1; transform: scale(1.15); }
+        .skill-img { width: 24px; height: 24px; margin-bottom: 6px; object-fit: contain; }
 
         .badge { 
-            padding: 4px 0; border-radius: 4px; font-size: 10px; font-weight: 900; width: 100%; text-align: center;
-            background: #21262d; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 4px; border-radius: 5px; font-size: 10px; font-weight: 900; width: 100%; text-align: center;
+            background: #161b22; color: #8b949e; text-transform: uppercase; border: 1px solid transparent;
         }
         
-        .top-player { background: rgba(255, 204, 0, 0.05) !important; border-left: 4px solid var(--gold); }
-        .top-player .rank-num { color: var(--gold); font-size: 1.6em; text-shadow: 0 0 10px var(--gold); }
-        
-        .ht1, .1 { background: var(--gold) !important; color: #000 !important; box-shadow: 0 0 12px var(--gold); }
-        .ht2, .2 { background: #adb5bd !important; color: #000 !important; }
+        /* Tiers Glow */
+        .ht1, .1 { background: var(--gold) !important; color: #000 !important; box-shadow: 0 0 15px var(--gold); border-color: #fff; }
+        .ht2, .2 { background: #95a5a6 !important; color: #000 !important; }
         .ht3, .3 { background: #cd7f32 !important; color: #000 !important; }
-
-        .rank-num { font-weight: 900; color: #484f58; text-align: center; font-size: 1.1em; }
     </style>
 </head>
 <body>
 
-    <audio id="clickSound" preload="auto">
-        <source src="https://www.soundjay.com/buttons/sounds/button-16.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
 
     <div class="container">
         <div class="header"><h1>MWTier</h1></div>
         
-        <div class="nav-bar">
+        <div class="nav-bar" id="navbar">
             <div class="nav-item active" onclick="changeSort('global')">🏆<span>Overall</span></div>
             <div class="nav-item" onclick="changeSort('sword')"><img src="https://mctiers.com/tier_icons/sword.svg" class="nav-img"><span>Sword</span></div>
             <div class="nav-item" onclick="changeSort('axe')"><img src="https://mctiers.com/tier_icons/axe.svg" class="nav-img"><span>Axe</span></div>
@@ -112,81 +93,86 @@
             <div class="nav-item" onclick="changeSort('cart')"><img src="https://static.wikia.nocookie.net/minecraft/images/e/e7/MinecartWithTNT.png" class="nav-img"><span>Cart</span></div>
         </div>
 
-        <div class="leaderboard" id="main-board"></div>
+        <div class="leaderboard" id="main-board">
+            </div>
     </div>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSsdJmHbzVV5uDXOYEcjUr_T8T0LTbSL6EMnxdugEuwe1aZsZW0NDMm8Im_qB9xzVEWKyKG50QLhjxJ/pub?output=csv';
         
         const customSkins = {
-            "MystycCr0wn": "https://i.ibb.co/vzS8mYm/mystyc-crown.png", 
+            "MystycCr0wn": "https://i.ibb.co/KcNvHF7T/mystyc.png", 
             "wa__": "https://i.ibb.co/bM6JpwP8/wa.png",
-            "walid_hd": "https://i.ibb.co/MkXYpJ1c/walid-hd.png",
+            "walid_hd": "https://i.ibb.co/MkXYpJ1c/walid.png",
             "HAMZAICZ": "https://i.ibb.co/CGZb1CV/hamza.png"
         };
 
         let playersData = [];
         let currentSortKey = 'global';
-        const tierMap = { 'ht1':100,'1':100,'ht2':80,'2':80,'ht3':60,'3':60 };
+        const tierOrder = { 'ht1':100,'1':100,'ht2':80,'2':80,'ht3':60,'3':60,'none':0,'':0 };
 
         async function init() {
-            const res = await fetch(CSV_URL);
-            const text = await res.text();
-            const rows = text.split('\n').slice(1);
-            playersData = rows.map(r => {
-                const c = r.split(',').map(s => s.trim());
-                return {
-                    name: c[0], global: c[1], sword: c[2], axe: c[3], uhc: c[4],
-                    mace: c[5], pot: c[6], spear: c[7], crystal: c[11], cart: c[12]
-                };
-            }).filter(p => p.name);
-            render();
+            try {
+                const res = await fetch(CSV_URL);
+                const text = await res.text();
+                const rows = text.split('\n').slice(1);
+                
+                playersData = rows.map(r => {
+                    const c = r.split(',').map(s => s.trim());
+                    return {
+                        name: c[0], global: c[1], sword: c[2], axe: c[3], uhc: c[4],
+                        mace: c[5], pot: c[6], spear: c[7], crystal: c[11], cart: c[12]
+                    };
+                }).filter(p => p.name);
+                render();
+            } catch (e) { console.error("Error loading CSV", e); }
         }
 
         function playSound() {
-            const audio = document.getElementById('clickSound');
-            audio.currentTime = 0;
-            audio.play().catch(e => console.log("Sound blocked by browser"));
+            const sound = document.getElementById('clickSound');
+            sound.currentTime = 0;
+            sound.play();
         }
 
         function render() {
-            playersData.sort((a, b) => (tierMap[b[currentSortKey]?.toLowerCase()] || 0) - (tierMap[a[currentSortKey]?.toLowerCase()] || 0));
+            playersData.sort((a, b) => (tierOrder[b[currentSortKey]?.toLowerCase()] || 0) - (tierOrder[a[currentSortKey]?.toLowerCase()] || 0));
             const board = document.getElementById('main-board');
             board.innerHTML = '';
 
             playersData.forEach((p, i) => {
-                const skin = customSkins[p.name] || `https://mc-heads.net/avatar/${p.name}`;
-                const isTop = i === 0;
+                const skinUrl = customSkins[p.name] || `https://mc-heads.net/avatar/${p.name}`;
+                const rankIcon = i === 0 ? '👑' : i + 1;
                 
                 board.innerHTML += `
-                    <div class="row ${isTop ? 'top-player' : ''}">
-                        <div class="rank-num">${isTop ? '👑' : i + 1}</div>
+                    <div class="row">
+                        <div style="font-weight:900; color:${i===0? 'var(--gold)':'#444'}; font-size:1.2em">${rankIcon}</div>
                         <div style="display:flex; align-items:center;">
                             <div class="avatar-box">
-                                <img class="skin-img" src="${skin}">
+                                <img class="skin-img" src="${skinUrl}" onerror="this.src='https://mc-heads.net/avatar/steve'">
                             </div>
                             <span class="player-name">${p.name}</span>
                         </div>
                         <div class="skills-grid">
-                            ${skill(p.global, '🏆', 'global', true)}
-                            ${skill(p.sword, 'https://mctiers.com/tier_icons/sword.svg', 'sword')}
-                            ${skill(p.axe, 'https://mctiers.com/tier_icons/axe.svg', 'axe')}
-                            ${skill(p.uhc, 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/7/74/Lava_Bucket_JE2_BE2.png', 'uhc')}
-                            ${skill(p.mace, 'https://media.forgecdn.net/attachments/914/47/pack.png', 'mace')}
-                            ${skill(p.pot, 'https://mctiers.com/tier_icons/pot.svg', 'pot')}
-                            ${skill(p.spear, 'https://cdn.modrinth.com/data/IcznAN6m/75d921704c939d9cb61471dcd3a1d0b3b94ff07f.png', 'spear')}
-                            ${skill(p.crystal, 'https://cdn.modrinth.com/data/ih5VCK3n/6bd43f541a03d9a9824f536301451c9604c2ab82.png', 'crystal')}
-                            ${skill(p.cart, 'https://static.wikia.nocookie.net/minecraft/images/e/e7/MinecartWithTNT.png', 'cart')}
+                            ${skillItem(p.global, '🏆', 'global', true)}
+                            ${skillItem(p.sword, 'https://mctiers.com/tier_icons/sword.svg', 'sword')}
+                            ${skillItem(p.axe, 'https://mctiers.com/tier_icons/axe.svg', 'axe')}
+                            ${skillItem(p.uhc, 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/7/74/Lava_Bucket_JE2_BE2.png', 'uhc')}
+                            ${skillItem(p.mace, 'https://media.forgecdn.net/attachments/914/47/pack.png', 'mace')}
+                            ${skillItem(p.pot, 'https://mctiers.com/tier_icons/pot.svg', 'pot')}
+                            ${skillItem(p.spear, 'https://cdn.modrinth.com/data/IcznAN6m/75d921704c939d9cb61471dcd3a1d0b3b94ff07f.png', 'spear')}
+                            ${skillItem(p.crystal, 'https://cdn.modrinth.com/data/ih5VCK3n/6bd43f541a03d9a9824f536301451c9604c2ab82.png', 'crystal')}
+                            ${skillItem(p.cart, 'https://static.wikia.nocookie.net/minecraft/images/e/e7/MinecartWithTNT.png', 'cart')}
                         </div>
                     </div>`;
             });
         }
 
-        function skill(val, img, key, emoji = false) {
-            const active = (currentSortKey === key) ? 'active-skill' : '';
+        function skillItem(val, icon, key, isEmoji = false) {
+            const activeClass = (currentSortKey === key) ? 'active-skill' : '';
+            const iconContent = isEmoji ? `<span style="font-size:20px">${icon}</span>` : `<img src="${icon}" class="skill-img">`;
             return `
-                <div class="skill-box ${active}">
-                    ${emoji ? `<span style="font-size:18px">${img}</span>` : `<img src="${img}" class="skill-img">`}
+                <div class="skill-box ${activeClass}">
+                    ${iconContent}
                     <span class="badge ${val?.toLowerCase() || ''}">${val || '--'}</span>
                 </div>`;
         }
