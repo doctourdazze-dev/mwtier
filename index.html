@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MWTier | Leaderboard</title>
+    <title>MWTier | Full Leaderboard</title>
     <style>
         :root {
             --bg: #050000; --card: #0d0101; --border: #3d0505;
@@ -47,19 +47,19 @@
             border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; min-width: 85px;
         }
         .nav-item.active { border-color: var(--red-glow); background: rgba(255, 0, 0, 0.2); }
+        .nav-img { width: 22px; height: 22px; object-fit: contain; margin: 0 auto; display: block; }
+        .nav-item span { font-size: 9px; text-transform: uppercase; display: block; margin-top: 5px; color: #8b949e; }
 
         .leaderboard { background: rgba(13, 1, 1, 0.9); border-radius: 12px; border: 1px solid var(--border); }
         .row { display: grid; grid-template-columns: 60px 280px 1fr; align-items: center; padding: 15px 20px; border-bottom: 1px solid #2d0505; }
         
-        /* 🥇 الترتيب الأول (Gold) والثاني (Silver) 🥇 */
+        /* 🥇 Ranks 🥇 */
         .row:nth-child(1) { background: rgba(255, 204, 0, 0.08); border-left: 4px solid var(--gold); }
         .row:nth-child(1) .rank-num { color: var(--gold); text-shadow: 0 0 10px var(--gold); font-size: 1.5em; }
-        .row:nth-child(1) .player-name { color: var(--gold); }
-
         .row:nth-child(2) { background: rgba(173, 181, 189, 0.05); border-left: 4px solid var(--silver); }
-        .row:nth-child(2) .rank-num { color: var(--silver); font-size: 1.3em; }
+        .row:nth-child(2) .rank-num { color: var(--silver); }
 
-        /* 🚨 الـ Zoom ديال السكينات 🚨 */
+        /* 🚨 Zoom 🚨 */
         .avatar-box { 
             width: 60px; height: 60px; overflow: hidden; display: flex; align-items: center; justify-content: center;
             background: rgba(255, 255, 255, 0.05); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);
@@ -70,7 +70,7 @@
         .skills-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 10px; }
         .skill-box { display: flex; flex-direction: column; align-items: center; opacity: 0.4; transition: 0.3s; }
         .skill-box.active-skill { opacity: 1; transform: scale(1.1); }
-        .nav-img, .skill-img { width: 22px; height: 22px; margin-bottom: 5px; }
+        .skill-img, .skill-emoji { width: 22px; height: 22px; margin-bottom: 5px; }
 
         .badge { padding: 4px 0; border-radius: 4px; font-size: 10px; font-weight: 900; width: 100%; text-align: center; background: #2d0505; color: #a18a8a; }
         .ht1, .1 { background: #ff0000 !important; color: #fff !important; box-shadow: 0 0 8px #ff0000; }
@@ -81,10 +81,7 @@
 
     <div id="loading-screen">
         <div class="loader-box">
-            <div class="cube-wrapper">
-                <div class="cube-top"></div>
-                <div class="cube-bottom"></div>
-            </div>
+            <div class="cube-wrapper"><div class="cube-top"></div><div class="cube-bottom"></div></div>
             <div class="loading-text">LOADING... <span id="percent">0</span>%</div>
         </div>
     </div>
@@ -95,7 +92,12 @@
             <div class="nav-item active" onclick="changeSort('global', event)">🏆<span>Overall</span></div>
             <div class="nav-item" onclick="changeSort('sword', event)"><img src="https://mctiers.com/tier_icons/sword.svg" class="nav-img"><span>Sword</span></div>
             <div class="nav-item" onclick="changeSort('axe', event)"><img src="https://mctiers.com/tier_icons/axe.svg" class="nav-img"><span>Axe</span></div>
+            <div class="nav-item" onclick="changeSort('uhc', event)"><img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/7/74/Lava_Bucket_JE2_BE2.png" class="nav-img"><span>UHC</span></div>
+            <div class="nav-item" onclick="changeSort('mace', event)"><img src="https://media.forgecdn.net/attachments/914/47/pack.png" class="nav-img"><span>Mace</span></div>
+            <div class="nav-item" onclick="changeSort('pot', event)"><img src="https://mctiers.com/tier_icons/pot.svg" class="nav-img"><span>Pot</span></div>
+            <div class="nav-item" onclick="changeSort('spear', event)"><img src="https://cdn.modrinth.com/data/IcznAN6m/75d921704c939d9cb61471dcd3a1d0b3b94ff07f.png" class="nav-img"><span>Spear</span></div>
             <div class="nav-item" onclick="changeSort('crystal', event)"><img src="https://cdn.modrinth.com/data/ih5VCK3n/6bd43f541a03d9a9824f536301451c9604c2ab82.png" class="nav-img"><span>Crystal</span></div>
+            <div class="nav-item" onclick="changeSort('cart', event)"><img src="https://static.wikia.nocookie.net/minecraft/images/e/e7/MinecartWithTNT.png" class="nav-img"><span>Cart</span></div>
         </div>
         <div class="leaderboard" id="main-board"></div>
     </div>
@@ -120,7 +122,7 @@
             const rows = text.split('\n').slice(1);
             playersData = rows.map(r => {
                 const c = r.split(',').map(s => s.trim());
-                return { name: c[0], global: c[1], sword: c[2], axe: c[3], crystal: c[11] };
+                return { name: c[0], global: c[1], sword: c[2], axe: c[3], uhc: c[4], mace: c[5], pot: c[6], spear: c[7], crystal: c[11], cart: c[12] };
             }).filter(p => p.name);
             render();
         }
@@ -142,7 +144,12 @@
                             ${skill(p.global, '🏆', 'global', true)}
                             ${skill(p.sword, 'https://mctiers.com/tier_icons/sword.svg', 'sword')}
                             ${skill(p.axe, 'https://mctiers.com/tier_icons/axe.svg', 'axe')}
+                            ${skill(p.uhc, 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/7/74/Lava_Bucket_JE2_BE2.png', 'uhc')}
+                            ${skill(p.mace, 'https://media.forgecdn.net/attachments/914/47/pack.png', 'mace')}
+                            ${skill(p.pot, 'https://mctiers.com/tier_icons/pot.svg', 'pot')}
+                            ${skill(p.spear, 'https://cdn.modrinth.com/data/IcznAN6m/75d921704c939d9cb61471dcd3a1d0b3b94ff07f.png', 'spear')}
                             ${skill(p.crystal, 'https://cdn.modrinth.com/data/ih5VCK3n/6bd43f541a03d9a9824f536301451c9604c2ab82.png', 'crystal')}
+                            ${skill(p.cart, 'https://static.wikia.nocookie.net/minecraft/images/e/e7/MinecartWithTNT.png', 'cart')}
                         </div>
                     </div>`;
             });
@@ -160,12 +167,10 @@
             render();
         }
 
-        // --- Loading Logic ---
         window.onload = () => {
             let count = 0;
             let interval = setInterval(() => {
-                count++;
-                document.getElementById('percent').innerText = count;
+                count++; document.getElementById('percent').innerText = count;
                 if (count >= 100) {
                     clearInterval(interval);
                     document.getElementById('loading-screen').style.opacity = '0';
@@ -174,7 +179,7 @@
                         document.getElementById('main-content').style.display = 'block';
                     }, 800);
                 }
-            }, 45); // 5 Seconds approx
+            }, 45);
             init();
         };
     </script>
