@@ -6,7 +6,7 @@
     <title>MWTier | Leaderboard</title>
     <style>
         :root {
-            --bg: #050000; --border: #3d0505;
+            --bg: #050000; --card: #0d0101; --border: #3d0505;
             --red-glow: #ff0000; --gold: #ffcc00; --silver: #adb5bd; --text: #f0f6fc;
         }
 
@@ -15,93 +15,93 @@
             background-color: var(--bg); overflow-x: hidden;
         }
 
-        /* --- ✨ Animated Background ✨ --- */
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(150, 0, 0, 0.15) 0%, transparent 70%);
-            z-index: -1; animation: pulse 6s infinite alternate ease-in-out;
-        }
-        @keyframes pulse { 0% { opacity: 0.5; } 100% { opacity: 1; } }
-
-        /* --- ⏳ Loading Screen --- */
+        /* --- ⏳ Loading Screen ⏳ --- */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050000; display: flex; align-items: center; justify-content: center;
             z-index: 9999; transition: opacity 0.8s ease;
         }
-        .loading-text { letter-spacing: 5px; font-size: 12px; font-weight: bold; margin-top: 20px; text-align: center;}
+        .loader-box { text-align: center; }
+        .cube-wrapper { position: relative; width: 100px; height: 100px; margin: 0 auto 20px; }
+        .cube-top, .cube-bottom {
+            position: absolute; width: 60px; height: 60px;
+            border: 3px solid var(--red-glow); transform: rotateX(60deg) rotateZ(45deg);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+        .cube-top { top: 0; animation: floatTop 2s infinite ease-in-out; }
+        .cube-bottom { bottom: 0; background: var(--red-glow); border: none; animation: floatBottom 2s infinite ease-in-out; }
+        @keyframes floatTop { 0%, 100% { transform: translateY(0) rotateX(60deg) rotateZ(45deg); } 50% { transform: translateY(-20px) rotateX(60deg) rotateZ(45deg); } }
+        @keyframes floatBottom { 0%, 100% { transform: translateY(0) rotateX(60deg) rotateZ(45deg); opacity: 0.8; } 50% { transform: translateY(10px) rotateX(60deg) rotateZ(45deg); opacity: 0.4; } }
+        .loading-text { letter-spacing: 5px; font-size: 12px; font-weight: bold; }
 
-        /* --- 🏆 Main Content --- */
-        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; display: none; }
+        /* --- 🏆 Main Content 🏆 --- */
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; z-index: 10; display: none; }
         .header h1 { 
             font-size: clamp(30px, 8vw, 70px); text-align: center; letter-spacing: 12px; margin: 30px 0; 
             font-weight: 900; text-transform: uppercase; color: #fff; text-shadow: 0 0 20px var(--red-glow);
         }
 
-        .nav-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 30px; }
+        .nav-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 30px; flex-wrap: wrap; }
         .nav-item { 
-            background: #1a0505; border: 1px solid var(--border); padding: 12px 5px; 
-            border-radius: 8px; cursor: pointer; text-align: center;
+            background: #1a0505; border: 1px solid var(--border); padding: 8px 12px; 
+            border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; min-width: 70px;
         }
         .nav-item.active { border-color: var(--red-glow); background: rgba(255, 0, 0, 0.2); }
+        .nav-img { width: 20px; height: 20px; object-fit: contain; margin: 0 auto; display: block; }
+        .nav-item span { font-size: 8px; text-transform: uppercase; display: block; margin-top: 5px; color: #8b949e; }
+
+        .leaderboard { background: rgba(13, 1, 1, 0.9); border-radius: 12px; border: 1px solid var(--border); }
         
-        /* 🚨 تكبير الأيقونات في الـ Nav Bar 🚨 */
-        .nav-img { 
-            width: 32px; height: 32px; /* كبرنا العرض والطول */
-            object-fit: contain; margin: 0 auto 5px; display: block; 
-            transform: scale(1.3); /* زيادة الحجم بنسبة 30% */
-            filter: drop-shadow(0 0 5px var(--red-glow)); /* إضافة وهج */
+        /* 📱 Responsive Grid 📱 */
+        .row { display: grid; grid-template-columns: 60px 240px 1fr; align-items: center; padding: 15px 20px; border-bottom: 1px solid #2d0505; }
+        
+        @media (max-width: 768px) {
+            .row { grid-template-columns: 50px 1fr 60px; padding: 10px; }
+            .skills-grid { display: none !important; } /* كنخفيو الشبكة في التلفون */
+            .mobile-skill { display: flex !important; justify-content: flex-end; }
+            .player-name { font-size: 1em !important; margin-left: 10px !important; }
         }
-        .nav-item span { font-size: 10px; text-transform: uppercase; color: #8b949e; font-weight: bold; }
 
-        .leaderboard { background: rgba(13, 1, 1, 0.9); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
-        .row { display: grid; grid-template-columns: 70px 1fr 80px; align-items: center; padding: 18px 15px; border-bottom: 1px solid #2d0505; }
-        
         /* 🥇 Ranks 🥇 */
-        .rank-num { font-size: 1.6em; font-weight: 900; color: #777; text-align: center; }
-        .row:nth-child(1) { border-left: 5px solid var(--gold); background: rgba(255, 204, 0, 0.05); }
-        .row:nth-child(1) .rank-num { color: var(--gold); font-size: 2em; }
+        .row:nth-child(1) { background: rgba(255, 204, 0, 0.08); border-left: 4px solid var(--gold); }
+        .row:nth-child(1) .rank-num { color: var(--gold); text-shadow: 0 0 10px var(--gold); font-size: 1.5em; }
+        .row:nth-child(2) { background: rgba(173, 181, 189, 0.05); border-left: 4px solid var(--silver); }
+        .row:nth-child(2) .rank-num { color: var(--silver); }
 
+        /* 🚨 Zoom 🚨 */
         .avatar-box { 
-            width: 60px; height: 60px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.05); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 55px; height: 55px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.05); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .skin-img { width: 165%; height: 165%; object-fit: cover; image-rendering: pixelated; }
-        .player-name { font-weight: 700; margin-left: 15px; font-size: 1.3em; color: #fff; }
         
-        /* 🚨 تكبير الأيقونات في شبكة المهارات (PC) 🚨 */
-        .skill-img { 
-            width: 28px; height: 28px; 
-            transform: scale(1.4); 
-            filter: drop-shadow(0 0 3px rgba(255,0,0,0.5));
-        }
+        .player-name { font-weight: 600; margin-left: 15px; font-size: 1.2em; color: #fff; }
+        .skills-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 10px; }
+        .skill-box { display: flex; flex-direction: column; align-items: center; opacity: 0.3; transition: 0.3s; }
+        .skill-box.active-skill { opacity: 1; transform: scale(1.1); }
+        .skill-img, .skill-emoji { width: 22px; height: 22px; margin-bottom: 5px; text-align: center; }
+        .mobile-skill { display: none; }
 
-        .badge { padding: 6px 0; border-radius: 6px; font-size: 12px; font-weight: 900; width: 55px; text-align: center; background: #2d0505; color: #fff; }
-        .ht1, .1 { background: #ff0000 !important; box-shadow: 0 0 10px #ff0000; }
-
-        @media (min-width: 769px) {
-            .nav-bar { grid-template-columns: repeat(9, 1fr); }
-            .row { grid-template-columns: 80px 300px 1fr; }
-            .skills-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 10px; }
-            .mobile-badge-container { display: none; }
-        }
-        @media (max-width: 768px) { .skills-grid { display: none; } .mobile-badge-container { display: flex; justify-content: flex-end; } }
+        .badge { padding: 4px 0; border-radius: 4px; font-size: 10px; font-weight: 900; width: 100%; text-align: center; background: #2d0505; color: #a18a8a; }
+        .ht1, .1 { background: #ff0000 !important; color: #fff !important; box-shadow: 0 0 8px #ff0000; }
+        .rank-num { font-weight: 900; color: #444; text-align: center; }
     </style>
 </head>
 <body>
 
     <div id="loading-screen">
         <div class="loader-box">
+            <div class="cube-wrapper"><div class="cube-top"></div><div class="cube-bottom"></div></div>
             <div class="loading-text">LOADING... <span id="percent">0</span>%</div>
         </div>
     </div>
 
     <div class="container" id="main-content">
-        <div class="header"><h1>MWTIER</h1></div>
+        <div class="header"><h1>MWTier</h1></div>
         <div class="nav-bar">
-            <div class="nav-item active" onclick="changeSort('global', event)"><img src="https://pvptiers.com/icons/tiers/overall.png" class="nav-img"><span>Overall</span></div>
+            <div class="nav-item active" onclick="changeSort('global', event)">🏆<span>Overall</span></div>
             <div class="nav-item" onclick="changeSort('sword', event)"><img src="https://mctiers.com/tier_icons/sword.svg" class="nav-img"><span>Sword</span></div>
-            <div class="nav-item" onclick="changeSort('axe', event)"><img src="https://pvptiers.com/icons/tiers/axe.png" class="nav-img"><span>Axe</span></div>
+            <div class="nav-item" onclick="changeSort('axe', event)"><img src="https://mctiers.com/tier_icons/axe.svg" class="nav-img"><span>Axe</span></div>
             <div class="nav-item" onclick="changeSort('uhc', event)"><img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/7/74/Lava_Bucket_JE2_BE2.png" class="nav-img"><span>UHC</span></div>
             <div class="nav-item" onclick="changeSort('mace', event)"><img src="https://media.forgecdn.net/attachments/914/47/pack.png" class="nav-img"><span>Mace</span></div>
             <div class="nav-item" onclick="changeSort('pot', event)"><img src="https://mctiers.com/tier_icons/pot.svg" class="nav-img"><span>Pot</span></div>
@@ -114,7 +114,14 @@
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSsdJmHbzVV5uDXOYEcjUr_T8T0LTbSL6EMnxdugEuwe1aZsZW0NDMm8Im_qB9xzVEWKyKG50QLhjxJ/pub?output=csv';
-        const customSkins = { "MystycCr0wn": "https://i.ibb.co/rfvySyzd/avatar-Head3.png", "wa__": "https://i.ibb.co/RTprQ2kX/wa.png", "walid_hd": "https://i.ibb.co/k66xzs6T/walid-hd.png", "HAMZAICZ": "https://i.ibb.co/SXtg8s4w/hamza.png", "minimokito": "https://i.ibb.co/v4jBX2TR/minimokito.png" };
+        const customSkins = {
+            "MystycCr0wn": "https://i.ibb.co/rfvySyzd/avatar-Head3.png", 
+            "wa__": "https://i.ibb.co/RTprQ2kX/wa.png",
+            "walid_hd": "https://i.ibb.co/k66xzs6T/walid-hd.png",
+            "HAMZAICZ": "https://i.ibb.co/SXtg8s4w/hamza.png",
+            "minimokito": "https://i.ibb.co/v4jBX2TR/minimokito.png"
+        };
+
         let playersData = [];
         let currentSortKey = 'global';
         const tierMap = { 'ht1':100,'1':100,'ht2':80,'2':80,'ht3':60,'3':60 };
@@ -138,16 +145,15 @@
                 const skin = customSkins[p.name] || `https://mc-heads.net/avatar/${p.name}`;
                 board.innerHTML += `
                     <div class="row">
-                        <div class="rank-num">${i + 1}</div>
+                        <div class="rank-num">${i === 0 ? '👑' : i + 1}</div>
                         <div style="display:flex; align-items:center;">
                             <div class="avatar-box"><img class="skin-img" src="${skin}"></div>
                             <span class="player-name">${p.name}</span>
                         </div>
-                        <div class="mobile-badge-container"><div class="badge ${p[currentSortKey]?.toLowerCase() || ''}">${p[currentSortKey] || '--'}</div></div>
                         <div class="skills-grid">
-                            ${skill(p.global, 'https://pvptiers.com/icons/tiers/overall.png', 'global')}
+                            ${skill(p.global, '🏆', 'global', true)}
                             ${skill(p.sword, 'https://mctiers.com/tier_icons/sword.svg', 'sword')}
-                            ${skill(p.axe, 'https://pvptiers.com/icons/tiers/axe.png', 'axe')}
+                            ${skill(p.axe, 'https://mctiers.com/tier_icons/axe.svg', 'axe')}
                             ${skill(p.uhc, 'https://static.wikia.nocookie.net/minecraft_gamepedia/images/7/74/Lava_Bucket_JE2_BE2.png', 'uhc')}
                             ${skill(p.mace, 'https://media.forgecdn.net/attachments/914/47/pack.png', 'mace')}
                             ${skill(p.pot, 'https://mctiers.com/tier_icons/pot.svg', 'pot')}
@@ -155,13 +161,16 @@
                             ${skill(p.crystal, 'https://cdn.modrinth.com/data/ih5VCK3n/6bd43f541a03d9a9824f536301451c9604c2ab82.png', 'crystal')}
                             ${skill(p.cart, 'https://static.wikia.nocookie.net/minecraft/images/e/e7/MinecartWithTNT.png', 'cart')}
                         </div>
+                        <div class="mobile-skill">
+                            ${skill(p[currentSortKey], '', currentSortKey, true)}
+                        </div>
                     </div>`;
             });
         }
 
-        function skill(val, img, key) {
-            const active = (currentSortKey === key) ? 'style="opacity:1; transform:scale(1.2);"' : 'style="opacity:0.3"';
-            return `<div class="skill-box" ${active}><img src="${img}" class="skill-img"><span class="badge ${val?.toLowerCase() || ''}">${val || '--'}</span></div>`;
+        function skill(val, img, key, isEmoji = false) {
+            const active = (currentSortKey === key) ? 'active-skill' : '';
+            return `<div class="skill-box ${active}">${isEmoji ? `<span>${img}</span>` : `<img src="${img}" class="skill-img">`}<span class="badge ${val?.toLowerCase() || ''}">${val || '--'}</span></div>`;
         }
 
         function changeSort(key, event) {
@@ -175,10 +184,16 @@
             let count = 0;
             let interval = setInterval(() => {
                 count++; document.getElementById('percent').innerText = count;
-                if (count >= 100) { clearInterval(interval); document.getElementById('loading-screen').style.opacity = '0';
-                    setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; document.getElementById('main-content').style.display = 'block'; }, 800);
+                if (count >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('loading-screen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').style.display = 'none';
+                        document.getElementById('main-content').style.display = 'block';
+                    }, 800);
                 }
-            }, 45); init();
+            }, 45); // 5 Seconds
+            init();
         };
     </script>
 </body>
